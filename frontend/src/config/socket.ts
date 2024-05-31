@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL:string = String(process.env.SERVER_URL);
 
 const socketOptions: any = {
     autoConnect: true,

@@ -2,14 +2,13 @@ const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite'
+    storage: './sattlement_db.sqlite'
 });
 
-class TestDB extends Model { }
-TestDB.init({
+class Sattlement extends Model { }
+Sattlement.init({
     requestAmount: DataTypes.INTEGER,
-    responseAmount: DataTypes.INTEGER,
     status: DataTypes.STRING
-}, { sequelize, modelName: 'testDB' });
+}, { sequelize, modelName: 'sattlement' });
 
-module.exports = {sequelize, TestDB};
+module.exports = {sequelize, Sattlement};

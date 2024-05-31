@@ -1,5 +1,5 @@
 const db = require('../models');
-const Database = db.TestDB;
+const Database = db.Sattlement;
 
 module.exports = io => {
    io.on('connection', (socket) => {
@@ -21,7 +21,6 @@ const sendRequest = async (io, req) => {
       const request = JSON.parse(req);
       const newRequest = {
          requestAmount: request.requestAmount,
-         responseAmount: "0",
          status: request.status
       };
 

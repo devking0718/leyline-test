@@ -15,7 +15,7 @@ function Header() {
     React.useEffect(() => {
         window.addEventListener(
             "resize",
-            () => window.innerWidth >= 960 && setOpenNav(false),
+            () => window.innerWidth >= 540 && setOpenNav(false),
         );
     }, []);
 
@@ -63,7 +63,7 @@ function Header() {
                     <div className="mr-4 hidden lg:block">{navList}</div>
                     <IconButton
                         variant="text"
-                        className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+                        className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent md:hidden"
                         ripple={false}
                         onClick={() => setOpenNav(!openNav)}
                     >

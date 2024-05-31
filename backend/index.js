@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 
-require("./routers/index.routes")(app);
+require("./routers/index.routes")(app, io);
 require("./controllers/websocket")(io);
 
 // Start server
