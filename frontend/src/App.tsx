@@ -11,7 +11,6 @@ import { socket } from './config/socket';
 
 
 function App() {
-  console.log(process.env.REACT_APP_BACKEND_URL)
   useEffect(() => {
     socket.on('connect', () => { });
 

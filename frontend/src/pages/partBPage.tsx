@@ -1,21 +1,13 @@
-import { Button, Card, CardBody, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Typography } from "@material-tailwind/react"
+import { Button, Card, CardBody, Chip, Typography } from "@material-tailwind/react"
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SERVER_URL } from "../config";
 import { toast } from "react-toastify";
 import { socket } from "../config/socket";
+import { DataTypeProps } from "../utils/interface";
 
-interface RequestTypeProps {
-    id: number;
-    requestAmount: number;
-    responseAmount: number;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-}
 
 function PartBPage() {
-    const [request, setRequest] = useState<RequestTypeProps | null>(null);
+    const [request, setRequest] = useState<DataTypeProps | null>(null);
 
     const submitResponse = async () => {
 
@@ -36,10 +28,8 @@ function PartBPage() {
     }
 
     const getRequest = async () => {
-        console.log("----------------------------------------------", process.env.REACT_APP_BACKEND_URL)
         await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getResponse`)
             .then(function (response) {
-                console.log("response", response.data.data)
                 setRequest(response.data.data[0])
             })
             .catch(function (error) {
@@ -68,9 +58,7 @@ function PartBPage() {
         getRequest();
 
         socket.on("message", (data: any) => {
-            console.log("partB", JSON.parse(data));
             const updateStatus = JSON.parse(data);
-            console.log("updateStatus", updateStatus)
             if (updateStatus.success === true) {
                 getRequest();
             }

@@ -1,18 +1,18 @@
 const db = require('../models');
 const Database = db.Sattlement;
 
-module.exports =  {
-    async sendRequest (req, res, io) {
+module.exports = {
+    async sendRequest(req, res, io) {
         try {
-            const {requestAmount, status} = req.body;
-    
+            const { requestAmount, status } = req.body;
+
             const newRequest = {
                 requestAmount: requestAmount,
                 status: status
-            }    
-            await Database.create(newRequest);  
+            }
+            await Database.create(newRequest);
 
-            res.status(200).json({ message: "Your request has been sent successfully." });   
+            res.status(200).json({ message: "Your request has been sent successfully." });
             io.emit("message", JSON.stringify({ message: 'Your request has been sent successfully.', success: true, type: "request" }))
         } catch (error) {
             console.log(error)

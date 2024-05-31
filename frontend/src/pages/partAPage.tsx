@@ -1,20 +1,33 @@
-import { Card, CardBody, Typography, Input, Button, Chip, Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
+import { Card, CardBody, Typography, Input, Button, Chip, } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { socket } from "../config/socket";
+import { DataTypeProps } from "../utils/interface";
 
-interface ResponseTypeProps {
-    id: number;
-    requestAmount: number;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-}
 
 export default function PartAPage() {
     const [requestAmount, setRequestAmount] = useState<number>(0);
-    const [response, setResponse] = useState<ResponseTypeProps | null>(null);
+    const [response, setResponse] = useState<DataTypeProps | null>(null);
+
+    const sendRequest = async (requestAmount: number) => {
+        const body = {
+            requestAmount: requestAmount,
+            status: "pending"
+        };
+
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sendRequest`, body)
+            .then(function (response) {
+                toast.success(response.data.message);
+            })
+            .catch(function (error) {
+                toast.error(error.response.data.message);
+            });
+
+
+        setResponse((preResponse) => {
+            return { ...preResponse, status: "pending" };
+        });
+    }
 
     const submitRequest = async () => {
         if (requestAmount === 0) {
@@ -26,23 +39,7 @@ export default function PartAPage() {
             toast.warn("Response Updated");
         }
         else {
-            const body = {
-                requestAmount: requestAmount,
-                status: "pending"
-            };
-
-            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/sendRequest`, body)
-                .then(function (response) {
-                    toast.success(response.data.message);
-                })
-                .catch(function (error) {
-                    toast.error(error.response.data.message);
-                });
-
-
-            setResponse((preResponse) => {
-                return { ...preResponse, status: "pending" };
-            });
+            await sendRequest(requestAmount);
         }
     }
 
@@ -58,18 +55,20 @@ export default function PartAPage() {
 
     const getResponse = async (): Promise<boolean> => {
         let currentResponse = response;
-        console.log("current", response);
 
         let res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getResponse`);
         let newResponse = res.data.data[0]
-        console.log("new", newResponse);
 
         setResponse(newResponse);
         if (isResponseUpdated(currentResponse, newResponse)) {
-            console.log("updated");
             return true;
         }
         return false;
+    }
+
+    const resetData = async () => {
+        setRequestAmount(0)
+        await sendRequest(0);
     }
 
     useEffect(() => {
@@ -80,7 +79,7 @@ export default function PartAPage() {
         <div className="container mx-auto py-12">
             <div className="flex flex-row justify-center w-full">
                 <div className="sm:w-1/2 md:w-1/2 w-full  px-4">
-                <Typography variant="h3" color="blue-gray" className="text-center uppercase mb-5">Part A</Typography>
+                    <Typography variant="h3" color="blue-gray" className="text-center uppercase mb-5">Part A</Typography>
                     <Card color="white bg-black-900" shadow={true} className="mb-5 border w-full">
                         <CardBody className="">
                             {response && (
@@ -96,10 +95,15 @@ export default function PartAPage() {
                             <div className="w-full mb-5">
                                 <Input label="Request Amount" className="w-full" color="blue" value={requestAmount} onChange={(e) => setRequestAmount(Number(e.target.value))} />
                             </div>
-                            <div className="w-full">
-                                <Button variant="gradient" className="w-full" color="gray" onClick={submitRequest}>
+                            <div className="flex w-full flex-row gap-4">
+                                <Button variant={`${response?.status === "settled" ? 'outlined' : 'gradient'}`} disabled={response?.status === "settled"} className={`w-${response?.status === "settled" ? '1/2' : 'full'}`} color="gray" onClick={submitRequest}>
                                     Submit
                                 </Button>
+                                {response?.status === "settled" && (
+                                    <Button variant="gradient" className={`w-${response?.status === "settled" ? '1/2' : 'full'}`} color="gray" onClick={resetData}>
+                                        Reset
+                                    </Button>
+                                )}
                             </div>
                         </CardBody>
                     </Card>
