@@ -88,8 +88,8 @@ export default function PartAPage() {
                                         Response Status:
                                     </Typography>
                                     {response?.status === "pending" && <Chip value={response.status} className="rounded-full" color="cyan" />}
-                                    {response?.status === "dispute" && <Chip value={response.status} className="rounded-full" color="red" />}
-                                    {response?.status === "settled" && <Chip value={response.status} className="rounded-full" color="green" />}
+                                    {response?.status === "dispute" && <Chip value={response.status + " with \"" + response.requestAmount + "\""} className="rounded-full" color="red" />}
+                                    {response?.status === "settled" && <Chip value={response.status + " with \"" + response.requestAmount + "\""} className="rounded-full" color="green" />}
                                 </div>
                             )}
                             <div className="w-full mb-5">
